@@ -1,121 +1,134 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-    <title>Belajar Python</title>
-      <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-        <style>
-            body {
-                  background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e');
-                        background-size: cover;
-                              background-position: center;
-                                    background-attachment: fixed;
-                                          font-family: 'Poppins', sans-serif;
-                                                margin: 0;
-                                                      color: white;
-                                                            text-align: center;
-                                                                  padding-top: 130px;
-                                                                        position: relative;
-                                                                              height: 100vh;
-                                                                                  }
+-- LocalScript di StarterPlayerScripts
 
-                                                                                      .overlay {
-                                                                                            background-color: rgba(0, 0, 0, 0.5);
-                                                                                                  position: absolute;
-                                                                                                        top: 0;
-                                                                                                              left: 0;
-                                                                                                                    width: 100%;
-                                                                                                                          height: 100%;
-                                                                                                                                z-index: -1;
-                                                                                                                                    }
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+local player = Players.LocalPlayer
 
-                                                                                                                                        header {
-                                                                                                                                              position: absolute;
-                                                                                                                                                    top: 0;
-                                                                                                                                                          width: 100%;
-                                                                                                                                                                padding: 15px;
-                                                                                                                                                                      background-color: rgba(0, 0, 0, 0.4);
-                                                                                                                                                                            font-size: 16px;
-                                                                                                                                                                                  font-weight: 600;
-                                                                                                                                                                                        animation: fadeIn 0.5s ease forwards;
-                                                                                                                                                                                              animation-delay: 0.2s;
-                                                                                                                                                                                                    opacity: 0;
-                                                                                                                                                                                                        }
+-- GUI setup
+local screenGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+screenGui.Name = "NZ_Hub_GUI"
 
-                                                                                                                                                                                                            .text {
-                                                                                                                                                                                                                  font-size: 36px;
-                                                                                                                                                                                                                        font-weight: 600;
-                                                                                                                                                                                                                              opacity: 0;
-                                                                                                                                                                                                                                    animation: fadeIn 0.5s ease forwards;
-                                                                                                                                                                                                                                          animation-delay: 0.2s;
-                                                                                                                                                                                                                                              }
+local mainFrame = Instance.new("Frame", screenGui)
+mainFrame.Size = UDim2.new(0, 220, 0, 160)
+mainFrame.Position = UDim2.new(0, 20, 0, 100)
+mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+mainFrame.BorderSizePixel = 0
+Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 60)
 
-                                                                                                                                                                                                                                                  .hidden {
-                                                                                                                                                                                                                                                        display: none;
-                                                                                                                                                                                                                                                            }
+-- Title
+local title = Instance.new("TextLabel", mainFrame)
+title.Size = UDim2.new(1, 0, 0.2, 0)
+title.Position = UDim2.new(0, 0, 0, 0)
+title.Text = "NZ Hub"
+title.Font = Enum.Font.GothamBold
+title.TextColor3 = Color3.new(1, 1, 1)
+title.BackgroundTransparency = 1
+title.TextScaled = true
 
-                                                                                                                                                                                                                                                                @keyframes fadeIn {
-                                                                                                                                                                                                                                                                      0% { opacity: 0; transform: translateY(10px); }
-                                                                                                                                                                                                                                                                            100% { opacity: 1; transform: translateY(0); }
-                                                                                                                                                                                                                                                                                }
+-- Infinite Jump Button
+local jumpToggle = Instance.new("TextButton", mainFrame)
+jumpToggle.Size = UDim2.new(0.8, 0, 0.25, 0)
+jumpToggle.Position = UDim2.new(0.1, 0, 0.3, 0)
+jumpToggle.BackgroundColor3 = Color3.fromRGB(80, 80, 255)
+jumpToggle.Text = "Infinite Jump: OFF"
+jumpToggle.TextColor3 = Color3.new(1, 1, 1)
+jumpToggle.Font = Enum.Font.Gotham
+jumpToggle.TextScaled = true
+Instance.new("UICorner", jumpToggle).CornerRadius = UDim.new(1, 0)
 
-                                                                                                                                                                                                                                                                                    button, .link-button {
-                                                                                                                                                                                                                                                                                          margin: 20px 10px;
-                                                                                                                                                                                                                                                                                                padding: 15px 40px;
-                                                                                                                                                                                                                                                                                                      font-size: 18px;
-                                                                                                                                                                                                                                                                                                            background-color: #3498db;
-                                                                                                                                                                                                                                                                                                                  border: none;
-                                                                                                                                                                                                                                                                                                                        border-radius: 999px;
-                                                                                                                                                                                                                                                                                                                              color: white;
-                                                                                                                                                                                                                                                                                                                                    cursor: pointer;
-                                                                                                                                                                                                                                                                                                                                          transition: background 0.2s;
-                                                                                                                                                                                                                                                                                                                                                animation: fadeIn 0.5s ease forwards;
-                                                                                                                                                                                                                                                                                                                                                      animation-delay: 0.2s;
-                                                                                                                                                                                                                                                                                                                                                            opacity: 0;
-                                                                                                                                                                                                                                                                                                                                                                  text-decoration: none;
-                                                                                                                                                                                                                                                                                                                                                                        display: inline-block;
-                                                                                                                                                                                                                                                                                                                                                                            }
+-- ESP Button
+local espToggle = Instance.new("TextButton", mainFrame)
+espToggle.Size = UDim2.new(0.8, 0, 0.25, 0)
+espToggle.Position = UDim2.new(0.1, 0, 0.6, 0)
+espToggle.BackgroundColor3 = Color3.fromRGB(80, 80, 255)
+espToggle.Text = "ESP: OFF"
+espToggle.TextColor3 = Color3.new(1, 1, 1)
+espToggle.Font = Enum.Font.Gotham
+espToggle.TextScaled = true
+Instance.new("UICorner", espToggle).CornerRadius = UDim.new(1, 0)
 
-                                                                                                                                                                                                                                                                                                                                                                                button:hover, .link-button:hover {
-                                                                                                                                                                                                                                                                                                                                                                                      background-color: #2980b9;
-                                                                                                                                                                                                                                                                                                                                                                                          }
-                                                                                                                                                                                                                                                                                                                                                                                            </style>
-                                                                                                                                                                                                                                                                                                                                                                                            </head>
-                                                                                                                                                                                                                                                                                                                                                                                            <body>
+-- === INFINITE JUMP LOGIC (PERBAIKAN) ===
+local infiniteJumpEnabled = false
+local jumpPower = 50
 
-                                                                                                                                                                                                                                                                                                                                                                                              <div class="overlay"></div>
-                                                                                                                                                                                                                                                                                                                                                                                                <header>Website by: Rehan batagor</header>
+UserInputService.JumpRequest:Connect(function()
+	if infiniteJumpEnabled then
+		local char = player.Character
+		if char then
+			local humanoidRootPart = char:FindFirstChild("HumanoidRootPart")
+			if humanoidRootPart then
+				humanoidRootPart.Velocity = Vector3.new(0, jumpPower, 0)
+			end
+		end
+	end
+end)
 
-                                                                                                                                                                                                                                                                                                                                                                                                  <!-- Pertanyaan Awal -->
-                                                                                                                                                                                                                                                                                                                                                                                                    <div id="startQuestion" class="text">Lu mau belajar Python ga?</div>
-                                                                                                                                                                                                                                                                                                                                                                                                      <button onclick="showYesContent()">Yes</button>
-                                                                                                                                                                                                                                                                                                                                                                                                        <button onclick="showNoMessage()">No</button>
+jumpToggle.MouseButton1Click:Connect(function()
+	infiniteJumpEnabled = not infiniteJumpEnabled
+	if infiniteJumpEnabled then
+		jumpToggle.Text = "Infinite Jump: ON"
+		jumpToggle.BackgroundColor3 = Color3.fromRGB(0, 200, 100)
+	else
+		jumpToggle.Text = "Infinite Jump: OFF"
+		jumpToggle.BackgroundColor3 = Color3.fromRGB(80, 80, 255)
+	end
+end)
 
-                                                                                                                                                                                                                                                                                                                                                                                                          <!-- Jika pilih YES -->
-                                                                                                                                                                                                                                                                                                                                                                                                            <div id="yesContent" class="hidden">
-                                                                                                                                                                                                                                                                                                                                                                                                                <div class="text" style="opacity: 1;">Python itu mudah bro!</div>
-                                                                                                                                                                                                                                                                                                                                                                                                                    <div class="text" style="opacity: 1;">Kalo lu mau belajar Python klik tombol kunjungi LearnPython.org!</div>
-                                                                                                                                                                                                                                                                                                                                                                                                                        
-                                                                                                                                                                                                                                                                                                                                                                                                                            <!-- Tombol ke website -->
-                                                                                                                                                                                                                                                                                                                                                                                                                                <a href="https://www.learnpython.org/" target="_blank" class="link-button">Kunjungi LearnPython.org</a>
-                                                                                                                                                                                                                                                                                                                                                                                                                                  </div>
+-- === ESP LOGIC ===
+local espEnabled = false
+local espConnections = {}
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                    <!-- Jika pilih NO -->
-                                                                                                                                                                                                                                                                                                                                                                                                                                      <div id="byeMessage" class="text hidden" style="opacity: 1;">Oke, makasih udah mampir :)</div>
+local function createESPForPlayer(target)
+	if target == player then return end
+	local billboard = Instance.new("BillboardGui")
+	billboard.Name = "NZ_ESP"
+	billboard.Size = UDim2.new(0, 100, 0, 40)
+	billboard.AlwaysOnTop = true
+	billboard.StudsOffset = Vector3.new(0, 3, 0)
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                        <script>
-                                                                                                                                                                                                                                                                                                                                                                                                                                            function showYesContent() {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                  document.getElementById('startQuestion').style.display = 'none';
-                                                                                                                                                                                                                                                                                                                                                                                                                                                        document.querySelectorAll('button').forEach(btn => btn.style.display = 'none');
-                                                                                                                                                                                                                                                                                                                                                                                                                                                              document.getElementById('yesContent').classList.remove('hidden');
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                  }
+	local nameLabel = Instance.new("TextLabel", billboard)
+	nameLabel.Size = UDim2.new(1, 0, 1, 0)
+	nameLabel.Text = target.Name
+	nameLabel.TextScaled = true
+	nameLabel.TextColor3 = Color3.new(1, 1, 0)
+	nameLabel.BackgroundTransparency = 1
+	nameLabel.Font = Enum.Font.GothamBold
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                      function showNoMessage() {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                            document.getElementById('startQuestion').style.display = 'none';
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  document.querySelectorAll('button').forEach(btn => btn.style.display = 'none');
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        document.getElementById('byeMessage').classList.remove('hidden');
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              </script>
+	local function attach()
+		if target.Character and target.Character:FindFirstChild("Head") then
+			billboard.Parent = target.Character:FindFirstChild("Head")
+		end
+	end
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              </body>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              </html>
+	attach()
+	local conn = target.CharacterAdded:Connect(function()
+		task.wait(1)
+		attach()
+	end)
+	table.insert(espConnections, {billboard = billboard, connection = conn})
+end
+
+local function clearESP()
+	for _, data in pairs(espConnections) do
+		if data.billboard then data.billboard:Destroy() end
+		if data.connection then data.connection:Disconnect() end
+	end
+	espConnections = {}
+end
+
+espToggle.MouseButton1Click:Connect(function()
+	espEnabled = not espEnabled
+	if espEnabled then
+		espToggle.Text = "ESP: ON"
+		espToggle.BackgroundColor3 = Color3.fromRGB(0, 200, 100)
+		for _, p in pairs(Players:GetPlayers()) do
+			createESPForPlayer(p)
+		end
+		Players.PlayerAdded:Connect(createESPForPlayer)
+	else
+		espToggle.Text = "ESP: OFF"
+		espToggle.BackgroundColor3 = Color3.fromRGB(80, 80, 255)
+		clearESP()
+	end
+end)
