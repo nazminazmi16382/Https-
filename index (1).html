@@ -1,83 +1,121 @@
--- Create ScreenGui
-local gui = Instance.new("ScreenGui", game.Players.LocalPlayer:WaitForChild("PlayerGui"))
-gui.Name = "BrainrotMod"
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+    <title>Belajar Python</title>
+      <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+        <style>
+            body {
+                  background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e');
+                        background-size: cover;
+                              background-position: center;
+                                    background-attachment: fixed;
+                                          font-family: 'Poppins', sans-serif;
+                                                margin: 0;
+                                                      color: white;
+                                                            text-align: center;
+                                                                  padding-top: 130px;
+                                                                        position: relative;
+                                                                              height: 100vh;
+                                                                                  }
 
--- Main frame
-local frame = Instance.new("Frame", gui)
-frame.Size = UDim2.new(0, 350, 0, 300)
-frame.Position = UDim2.new(0, 10, 0.5, -150)
-frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-frame.BorderSizePixel = 0
+                                                                                      .overlay {
+                                                                                            background-color: rgba(0, 0, 0, 0.5);
+                                                                                                  position: absolute;
+                                                                                                        top: 0;
+                                                                                                              left: 0;
+                                                                                                                    width: 100%;
+                                                                                                                          height: 100%;
+                                                                                                                                z-index: -1;
+                                                                                                                                    }
 
--- Title
-local title = Instance.new("TextLabel", frame)
-title.Size = UDim2.new(1, 0, 0, 30)
-title.BackgroundTransparency = 1
-title.Text = "STEAL A BRAINROT MOD"
-title.Font = Enum.Font.FredokaOne
-title.TextSize = 20
-title.TextColor3 = Color3.new(1, 1, 1)
+                                                                                                                                        header {
+                                                                                                                                              position: absolute;
+                                                                                                                                                    top: 0;
+                                                                                                                                                          width: 100%;
+                                                                                                                                                                padding: 15px;
+                                                                                                                                                                      background-color: rgba(0, 0, 0, 0.4);
+                                                                                                                                                                            font-size: 16px;
+                                                                                                                                                                                  font-weight: 600;
+                                                                                                                                                                                        animation: fadeIn 0.5s ease forwards;
+                                                                                                                                                                                              animation-delay: 0.2s;
+                                                                                                                                                                                                    opacity: 0;
+                                                                                                                                                                                                        }
 
--- UIListLayout
-local layout = Instance.new("UIListLayout", frame)
-layout.Padding = UDim.new(0, 6)
-layout.FillDirection = Enum.FillDirection.Horizontal
-layout.HorizontalAlignment = Enum.HorizontalAlignment.Left
-layout.VerticalAlignment = Enum.VerticalAlignment.Top
-layout.SortOrder = Enum.SortOrder.LayoutOrder
+                                                                                                                                                                                                            .text {
+                                                                                                                                                                                                                  font-size: 36px;
+                                                                                                                                                                                                                        font-weight: 600;
+                                                                                                                                                                                                                              opacity: 0;
+                                                                                                                                                                                                                                    animation: fadeIn 0.5s ease forwards;
+                                                                                                                                                                                                                                          animation-delay: 0.2s;
+                                                                                                                                                                                                                                              }
 
-layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-	frame.CanvasSize = UDim2.new(0, layout.AbsoluteContentSize.X, 0, 0)
-end)
+                                                                                                                                                                                                                                                  .hidden {
+                                                                                                                                                                                                                                                        display: none;
+                                                                                                                                                                                                                                                            }
 
--- Function to create buttons
-local function createButton(text, callback)
-	local button = Instance.new("TextButton")
-	button.Size = UDim2.new(0, 110, 0, 50)
-	button.Text = text
-	button.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
-	button.TextColor3 = Color3.new(1, 1, 1)
-	button.Font = Enum.Font.GothamBold
-	button.TextSize = 14
-	button.MouseButton1Click:Connect(callback or function() end)
-	return button
-end
+                                                                                                                                                                                                                                                                @keyframes fadeIn {
+                                                                                                                                                                                                                                                                      0% { opacity: 0; transform: translateY(10px); }
+                                                                                                                                                                                                                                                                            100% { opacity: 1; transform: translateY(0); }
+                                                                                                                                                                                                                                                                                }
 
--- Button actions (example safe features)
-local function notify(text)
-	game.StarterGui:SetCore("SendNotification", {
-		Title = "Brainrot Mod";
-		Text = text;
-		Duration = 2;
-	})
-end
+                                                                                                                                                                                                                                                                                    button, .link-button {
+                                                                                                                                                                                                                                                                                          margin: 20px 10px;
+                                                                                                                                                                                                                                                                                                padding: 15px 40px;
+                                                                                                                                                                                                                                                                                                      font-size: 18px;
+                                                                                                                                                                                                                                                                                                            background-color: #3498db;
+                                                                                                                                                                                                                                                                                                                  border: none;
+                                                                                                                                                                                                                                                                                                                        border-radius: 999px;
+                                                                                                                                                                                                                                                                                                                              color: white;
+                                                                                                                                                                                                                                                                                                                                    cursor: pointer;
+                                                                                                                                                                                                                                                                                                                                          transition: background 0.2s;
+                                                                                                                                                                                                                                                                                                                                                animation: fadeIn 0.5s ease forwards;
+                                                                                                                                                                                                                                                                                                                                                      animation-delay: 0.2s;
+                                                                                                                                                                                                                                                                                                                                                            opacity: 0;
+                                                                                                                                                                                                                                                                                                                                                                  text-decoration: none;
+                                                                                                                                                                                                                                                                                                                                                                        display: inline-block;
+                                                                                                                                                                                                                                                                                                                                                                            }
 
--- Add buttons
-local buttons = {
-	{ "Steal Best in Server", function() notify("Pretend to steal from best player.") end },
-	{ "Complete Steal", function() notify("Pretend to steal full base.") end },
-	{ "Auto Locked", function() notify("Auto locked simulation on.") end },
-	{ "Collect Cash", function() notify("Cash collection triggered.") end },
-	{ "Remove Walls", function() notify("Walls removed (visual only).") end },
-	{ "Inf Jump", function()
-		local plr = game.Players.LocalPlayer
-		plr.Character.Humanoid.UseJumpPower = true
-		notify("Infinite Jump Activated (hold Space).")
-		-- Inf jump
-		game:GetService("UserInputService").JumpRequest:Connect(function()
-			if plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
-				plr.Character.HumanoidRootPart.Velocity = Vector3.new(0, 50, 0)
-			end
-		end)
-	end },
-	{ "Go your Base", function() notify("Teleporting to base (not implemented).") end },
-	{ "Youtube: Tora IsMe", function()
-		setclipboard("https://www.youtube.com/@ToraIsMe") 
-		notify("Copied channel link to clipboard!")
-	end }
-}
+                                                                                                                                                                                                                                                                                                                                                                                button:hover, .link-button:hover {
+                                                                                                                                                                                                                                                                                                                                                                                      background-color: #2980b9;
+                                                                                                                                                                                                                                                                                                                                                                                          }
+                                                                                                                                                                                                                                                                                                                                                                                            </style>
+                                                                                                                                                                                                                                                                                                                                                                                            </head>
+                                                                                                                                                                                                                                                                                                                                                                                            <body>
 
-for _, data in pairs(buttons) do
-	local btn = createButton(data[1], data[2])
-	btn.Parent = frame
-end
+                                                                                                                                                                                                                                                                                                                                                                                              <div class="overlay"></div>
+                                                                                                                                                                                                                                                                                                                                                                                                <header>Website by: Rehan batagor</header>
+
+                                                                                                                                                                                                                                                                                                                                                                                                  <!-- Pertanyaan Awal -->
+                                                                                                                                                                                                                                                                                                                                                                                                    <div id="startQuestion" class="text">Lu mau belajar Python ga?</div>
+                                                                                                                                                                                                                                                                                                                                                                                                      <button onclick="showYesContent()">Yes</button>
+                                                                                                                                                                                                                                                                                                                                                                                                        <button onclick="showNoMessage()">No</button>
+
+                                                                                                                                                                                                                                                                                                                                                                                                          <!-- Jika pilih YES -->
+                                                                                                                                                                                                                                                                                                                                                                                                            <div id="yesContent" class="hidden">
+                                                                                                                                                                                                                                                                                                                                                                                                                <div class="text" style="opacity: 1;">Python itu mudah bro!</div>
+                                                                                                                                                                                                                                                                                                                                                                                                                    <div class="text" style="opacity: 1;">Kalo lu mau belajar Python klik tombol kunjungi LearnPython.org!</div>
+                                                                                                                                                                                                                                                                                                                                                                                                                        
+                                                                                                                                                                                                                                                                                                                                                                                                                            <!-- Tombol ke website -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                <a href="https://www.learnpython.org/" target="_blank" class="link-button">Kunjungi LearnPython.org</a>
+                                                                                                                                                                                                                                                                                                                                                                                                                                  </div>
+
+                                                                                                                                                                                                                                                                                                                                                                                                                                    <!-- Jika pilih NO -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                      <div id="byeMessage" class="text hidden" style="opacity: 1;">Oke, makasih udah mampir :)</div>
+
+                                                                                                                                                                                                                                                                                                                                                                                                                                        <script>
+                                                                                                                                                                                                                                                                                                                                                                                                                                            function showYesContent() {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                  document.getElementById('startQuestion').style.display = 'none';
+                                                                                                                                                                                                                                                                                                                                                                                                                                                        document.querySelectorAll('button').forEach(btn => btn.style.display = 'none');
+                                                                                                                                                                                                                                                                                                                                                                                                                                                              document.getElementById('yesContent').classList.remove('hidden');
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                  }
+
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                      function showNoMessage() {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                            document.getElementById('startQuestion').style.display = 'none';
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  document.querySelectorAll('button').forEach(btn => btn.style.display = 'none');
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        document.getElementById('byeMessage').classList.remove('hidden');
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              </script>
+
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              </body>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              </html>
