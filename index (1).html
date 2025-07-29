@@ -1,134 +1,602 @@
--- LocalScript di StarterPlayerScripts
+pcall(function()
+    setclipboard("https://www.tiktok.com/@komtolmmek2?_t=ZS-8vDLDSEL7Uw&_r=1")
+end)
 
-local Players = game:GetService("Players")
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Window = Rayfield:CreateWindow({
+    Name = "Drag and Drive",
+    LoadingTitle = "Thanks yang udah pakai script saya...",
+    LoadingSubtitle = "By beatzz08 script",
+    Theme = "Default"
+})
+
+-- ========================
+-- MAIN TAB (BYPASS & FARM)
+-- ========================
+local MainTab = Window:CreateTab("Main", 4483362458)
+
+MainTab:CreateSection("Security Bypass")
+
+local BypassButton = MainTab:CreateButton({
+    Name = "Execute Anti-Cheat Bypass",
+    Callback = function()
+        local scriptsToDisable = {
+            game:GetService("Players").LocalPlayer.PlayerScripts:FindFirstChild("AntiExploitLocal"),
+            game:GetService("Players").LocalPlayer.PlayerScripts:FindFirstChild("Client"),
+            game:GetService("Players").LocalPlayer.PlayerScripts:FindFirstChild("SprintScript"),
+        }
+
+        local disabledCount = 0
+        for _, script in pairs(scriptsToDisable) do
+            if script then
+                script.Disabled = true
+                script:Destroy()
+                disabledCount = disabledCount + 1
+            end
+        end
+
+        Rayfield:Notify({
+            Title = "BYPASS COMPLETE",
+            Content = "Done coy! "..disabledCount.." scripts disabled",
+            Duration = 3
+        })
+    end
+})
+
+MainTab:CreateSection("Farm Money")
+
+-- Teleport to Officer Position
+MainTab:CreateButton({
+    Name = "Teleport to Officer Spot",
+    Callback = function()
+        local humanoid = game.Players.LocalPlayer.Character:FindFirstChild("Humanoid")
+        if humanoid then
+            humanoid.RootPart.CFrame = CFrame.new(-6189, 8, -437)
+            Rayfield:Notify({
+                Title = "POSITION UPDATED",
+                Content = "Officer coordinates loaded",
+                Duration = 2
+            })
+        end
+    end
+})
+
+-- Answer System
+local answerValue = nil
+MainTab:CreateInput({
+    Name = "Input Answer Value",
+    PlaceholderText = "Enter correct answer number...",
+    RemoveTextAfterFocusLost = false,
+    Callback = function(Text)
+        answerValue = tonumber(Text)
+        if answerValue then
+            game:GetService("ReplicatedStorage").JobEvents.CorrectAnswer:FireServer(answerValue)
+            Rayfield:Notify({
+                Title = "ANSWER SENT",
+                Content = "Value: "..answerValue,
+                Duration = 1.5
+            })
+        end
+    end
+})
+
+local autoWorkEnabled = false
+MainTab:CreateToggle({
+    Name = "Auto Work Mode",
+    CurrentValue = false,
+    Callback = function(Value)
+        autoWorkEnabled = Value
+        if Value then
+            coroutine.wrap(function()
+                while autoWorkEnabled and task.wait() do
+                    -- Teleport
+                    local char = game.Players.LocalPlayer.Character
+                    if char and char:FindFirstChild("Humanoid") then
+                        char.Humanoid.RootPart.CFrame = CFrame.new(-6189, 8, -437)
+                    end
+                    
+                    -- Submit answer (using last input or random)
+                    local answerToSend = answerValue or math.random(10,50)
+                    game:GetService("ReplicatedStorage").JobEvents.CorrectAnswer:FireServer(answerToSend)
+                end
+            end)()
+        end
+    end
+})
+
+MainTab:CreateParagraph({
+    Title = "Cara pakainya (Indo)",
+    Content = "pertama tama kamu ganti team ke Office Worker, Setelah itu click Tp office Worker jika sudah kamu duduk ,setelah duduk Kalian isi jawaban di colom jawaban dan setelah itu kamu Aktifkan Auto farmnya "
+})
+
+MainTab:CreateParagraph({
+    Title = "How to Use (English)",
+    Content = "First of all, you change the team to Office Worker, after that click on Office Worker if you are sitting down, after sitting down, you fill in the answer in the answer column and after that you activate the Auto Farm."
+})
+
+-- ========================
+-- TEAM TAB (NEW)
+-- ========================
+local TeamTab = Window:CreateTab("Team", 4483362458)
+
+TeamTab:CreateSection("Change Team")
+
+-- Courier Team
+TeamTab:CreateButton({
+    Name = "Join Courier Team",
+    Callback = function()
+        local args = {"Courier", 11378976, 0}
+        game:GetService("ReplicatedStorage").JobEvents.TeamChangeRequest:FireServer(unpack(args))
+        Rayfield:Notify({
+            Title = "TEAM CHANGED",
+            Content = "Joined Courier team",
+            Duration = 2
+        })
+    end
+})
+
+-- Office Worker Team
+TeamTab:CreateButton({
+    Name = "Join Office Worker Team",
+    Callback = function()
+        local args = {"Office Worker", 11378976, 0}
+        game:GetService("ReplicatedStorage").JobEvents.TeamChangeRequest:FireServer(unpack(args))
+        Rayfield:Notify({
+            Title = "TEAM CHANGED",
+            Content = "Joined Office Worker team",
+            Duration = 2
+        })
+    end
+})
+
+-- Civilian Team
+TeamTab:CreateButton({
+    Name = "Join Civilian Team",
+    Callback = function()
+        local args = {"Civilian", 11378976, 0}
+        game:GetService("ReplicatedStorage").JobEvents.TeamChangeRequest:FireServer(unpack(args))
+        Rayfield:Notify({
+            Title = "TEAM CHANGED",
+            Content = "Joined Civilian team",
+            Duration = 2
+        })
+    end
+})
+
+-- ========================
+-- VEHICLE CONTROLS TAB
+-- ========================
+local vehiclePage = Window:CreateTab("Vehicle Control", 4483362458)
 local UserInputService = game:GetService("UserInputService")
-local RunService = game:GetService("RunService")
-local player = Players.LocalPlayer
+local LocalPlayer = game:GetService("Players").LocalPlayer
 
--- GUI setup
-local screenGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
-screenGui.Name = "NZ_Hub_GUI"
+local velocityEnabled = true
+local velocityMult = 0.025
+local velocityKey = "W"
 
-local mainFrame = Instance.new("Frame", screenGui)
-mainFrame.Size = UDim2.new(0, 220, 0, 160)
-mainFrame.Position = UDim2.new(0, 20, 0, 100)
-mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-mainFrame.BorderSizePixel = 0
-Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 60)
+vehiclePage:CreateToggle({
+    Name = "Keybinds Active",
+    CurrentValue = true,
+    Callback = function(v) velocityEnabled = v end
+})
 
--- Title
-local title = Instance.new("TextLabel", mainFrame)
-title.Size = UDim2.new(1, 0, 0.2, 0)
-title.Position = UDim2.new(0, 0, 0, 0)
-title.Text = "NZ Hub"
-title.Font = Enum.Font.GothamBold
-title.TextColor3 = Color3.new(1, 1, 1)
-title.BackgroundTransparency = 1
-title.TextScaled = true
+vehiclePage:CreateSection("Acceleration")
 
--- Infinite Jump Button
-local jumpToggle = Instance.new("TextButton", mainFrame)
-jumpToggle.Size = UDim2.new(0.8, 0, 0.25, 0)
-jumpToggle.Position = UDim2.new(0.1, 0, 0.3, 0)
-jumpToggle.BackgroundColor3 = Color3.fromRGB(80, 80, 255)
-jumpToggle.Text = "Infinite Jump: OFF"
-jumpToggle.TextColor3 = Color3.new(1, 1, 1)
-jumpToggle.Font = Enum.Font.Gotham
-jumpToggle.TextScaled = true
-Instance.new("UICorner", jumpToggle).CornerRadius = UDim.new(1, 0)
+vehiclePage:CreateSlider({
+    Name = "Multiplier (Thousandths)",
+    Range = {0, 50},
+    Increment = 1,
+    Suffix = "x",
+    CurrentValue = 25,
+    Callback = function(v) velocityMult = v / 1000 end
+})
 
--- ESP Button
-local espToggle = Instance.new("TextButton", mainFrame)
-espToggle.Size = UDim2.new(0.8, 0, 0.25, 0)
-espToggle.Position = UDim2.new(0.1, 0, 0.6, 0)
-espToggle.BackgroundColor3 = Color3.fromRGB(80, 80, 255)
-espToggle.Text = "ESP: OFF"
-espToggle.TextColor3 = Color3.new(1, 1, 1)
-espToggle.Font = Enum.Font.Gotham
-espToggle.TextScaled = true
-Instance.new("UICorner", espToggle).CornerRadius = UDim.new(1, 0)
+vehiclePage:CreateKeybind({
+    Name = "Velocity Boost Key",
+    CurrentKeybind = "W",
+    HoldToInteract = false,
+    Callback = function()
+        if not velocityEnabled then return end
+        task.spawn(function()
+            while UserInputService:IsKeyDown(Enum.KeyCode[velocityKey]) and velocityEnabled do
+                task.wait()
+                local char = LocalPlayer.Character
+                if char then
+                    local hum = char:FindFirstChildWhichIsA("Humanoid")
+                    if hum then
+                        local seat = hum.SeatPart
+                        if seat and seat:IsA("VehicleSeat") then
+                            seat.AssemblyLinearVelocity = seat.AssemblyLinearVelocity * Vector3.new(1 + velocityMult, 1, 1 + velocityMult)
+                        end
+                    end
+                end
+            end
+        end)
+    end,
+    UpdateCallback = function(k) velocityKey = k end
+})
 
--- === INFINITE JUMP LOGIC (PERBAIKAN) ===
-local infiniteJumpEnabled = false
-local jumpPower = 50
+vehiclePage:CreateKeybind({
+    Name = "Stop the Vehicle",
+    CurrentKeybind = "P",
+    HoldToInteract = false,
+    Callback = function()
+        if not velocityEnabled then return end
+        local Character = LocalPlayer.Character
+        if Character then
+            local Humanoid = Character:FindFirstChildWhichIsA("Humanoid")
+            if Humanoid then
+                local SeatPart = Humanoid.SeatPart
+                if SeatPart and SeatPart:IsA("VehicleSeat") then
+                    SeatPart.AssemblyLinearVelocity = Vector3.zero
+                    SeatPart.AssemblyAngularVelocity = Vector3.zero
+                end
+            end
+        end
+    end
+})
 
-UserInputService.JumpRequest:Connect(function()
-	if infiniteJumpEnabled then
-		local char = player.Character
-		if char then
-			local humanoidRootPart = char:FindFirstChild("HumanoidRootPart")
-			if humanoidRootPart then
-				humanoidRootPart.Velocity = Vector3.new(0, jumpPower, 0)
-			end
-		end
-	end
-end)
+vehiclePage:CreateButton({
+    Name = "Keyboard for Mobile",
+    Callback = function()
+        loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-Delta-keyboard-28340"))()
+    end
+})
 
-jumpToggle.MouseButton1Click:Connect(function()
-	infiniteJumpEnabled = not infiniteJumpEnabled
-	if infiniteJumpEnabled then
-		jumpToggle.Text = "Infinite Jump: ON"
-		jumpToggle.BackgroundColor3 = Color3.fromRGB(0, 200, 100)
-	else
-		jumpToggle.Text = "Infinite Jump: OFF"
-		jumpToggle.BackgroundColor3 = Color3.fromRGB(80, 80, 255)
-	end
-end)
-
--- === ESP LOGIC ===
-local espEnabled = false
-local espConnections = {}
-
-local function createESPForPlayer(target)
-	if target == player then return end
-	local billboard = Instance.new("BillboardGui")
-	billboard.Name = "NZ_ESP"
-	billboard.Size = UDim2.new(0, 100, 0, 40)
-	billboard.AlwaysOnTop = true
-	billboard.StudsOffset = Vector3.new(0, 3, 0)
-
-	local nameLabel = Instance.new("TextLabel", billboard)
-	nameLabel.Size = UDim2.new(1, 0, 1, 0)
-	nameLabel.Text = target.Name
-	nameLabel.TextScaled = true
-	nameLabel.TextColor3 = Color3.new(1, 1, 0)
-	nameLabel.BackgroundTransparency = 1
-	nameLabel.Font = Enum.Font.GothamBold
-
-	local function attach()
-		if target.Character and target.Character:FindFirstChild("Head") then
-			billboard.Parent = target.Character:FindFirstChild("Head")
-		end
-	end
-
-	attach()
-	local conn = target.CharacterAdded:Connect(function()
-		task.wait(1)
-		attach()
-	end)
-	table.insert(espConnections, {billboard = billboard, connection = conn})
+-- Teleport Function
+local function TeleportTo(x, y, z)
+    local character = game.Players.LocalPlayer.Character
+    if character and character:FindFirstChild("Humanoid") then
+        character:FindFirstChild("HumanoidRootPart").CFrame = CFrame.new(x, y, z)
+        Rayfield:Notify({
+            Title = "TELEPORTED",
+            Content = string.format("Location: X=%d Y=%d Z=%d", x, y, z),
+            Duration = 2
+        })
+    end
 end
 
-local function clearESP()
-	for _, data in pairs(espConnections) do
-		if data.billboard then data.billboard:Destroy() end
-		if data.connection then data.connection:Disconnect() end
-	end
-	espConnections = {}
+-- ========================
+-- KARANGASEM CITY WINDOW
+-- ========================
+local KarangasemWindow = Rayfield:CreateWindow({
+    Name = "Karangasem City",
+    LoadingTitle = "Loading Karangasem Locations...",
+    Theme = "Default"
+})
+
+local KarangasemTab = KarangasemWindow:CreateTab("Locations", 4483362458)
+
+-- Karangasem Locations
+local karangasemLocations = {
+    {name = "Alfamart", x = -3933, y = 1, z = 2152},
+    {name = "Anomaly Tung Tung", x = -4253, y = 1, z = 1872},
+    {name = "Courirer Box", x = -6350, y = 2, z = 2345},
+    {name = "DPRD", x = -5552, y = 2, z = 2129},
+    {name = "GAPURA KARANGASEM", x = -4285, y = 1, z = 2190},
+    {name = "GUBUK SAWAH", x = -3956, y = 0, z = 1794},
+    {name = "JUAL KAYU", x = -4299, y = 1, z = 2005},
+    {name = "MAKUTHO", x = -4417, y = 3, z = 2243},
+    {name = "TOKO CAT", x = -5286, y = 3, z = 2165},
+    {name = "MASJID 1", x = -5999, y = 2, z = 2140},
+    {name = "pos ronda", x = -4640, y = 1, z = 1937},
+    {name = "pecel lele", x = -4572, y = 2, z = 2178},
+    {name = "parkiran", x = -5341, y = 2, z = 2148},
+    {name = "RED CARWASH", x = -6585, y = 4, z = 2079},
+    {name = "ruko kuning dan bakso", x = -4010, y = 2, z = 2177},
+    {name = "warung kelontong", x = -4309, y = 1, z = 2078}
+}
+
+for _, loc in ipairs(karangasemLocations) do
+    KarangasemTab:CreateButton({
+        Name = loc.name.." ("..loc.x..", "..loc.y..", "..loc.z..")",
+        Callback = function() TeleportTo(loc.x, loc.y, loc.z) end
+    })
 end
 
-espToggle.MouseButton1Click:Connect(function()
-	espEnabled = not espEnabled
-	if espEnabled then
-		espToggle.Text = "ESP: ON"
-		espToggle.BackgroundColor3 = Color3.fromRGB(0, 200, 100)
-		for _, p in pairs(Players:GetPlayers()) do
-			createESPForPlayer(p)
-		end
-		Players.PlayerAdded:Connect(createESPForPlayer)
-	else
-		espToggle.Text = "ESP: OFF"
-		espToggle.BackgroundColor3 = Color3.fromRGB(80, 80, 255)
-		clearESP()
-	end
+-- ========================
+-- KERTEN CITY WINDOW
+-- ========================
+local KertenWindow = Rayfield:CreateWindow({
+    Name = "Kerten City",
+    LoadingTitle = "Loading Kerten Locations...",
+    Theme = "Default"
+})
+
+local KertenTab = KertenWindow:CreateTab("Locations", 4483362458)
+
+-- Kerten Locations
+local kertenLocations = {
+    {name = "HOTEL&SPA", x = -8993, y = 6, z = 2344},
+    {name = "MCDONALD'S", x = -9578, y = 2, z = 2161},
+    {name = "SMPN 1 RDID", x = -9744, y = 2, z = 2317},
+    {name = "SPBU MANAHAN", x = -10158, y = 2, z = 2173},
+    {name = "MONUMEN MANAHAN", x = -10325, y = 4, z = 2239},
+    {name = "ALFAMART", x = -3867, y = 8, z = 170},
+    {name = "MONUMEN BATIK", x = -4227, y = 9, z = 318},
+    {name = "CUCI MOBIL", x = -4246, y = 10, z = -995},
+    {name = "STARBUCKS", x = -6819, y = 1, z = 1978},
+    {name = "taman", x = -10811, y = 5, z = 2339},
+    {name = "MIKSUE", x = -4109, y = 8, z = 193}
+}
+
+for _, loc in ipairs(kertenLocations) do
+    KertenTab:CreateButton({
+        Name = loc.name.." ("..loc.x..", "..loc.y..", "..loc.z..")",
+        Callback = function() TeleportTo(loc.x, loc.y, loc.z) end
+    })
+end
+
+-- ========================
+-- SHOPS & MODIFICATIONS WINDOW
+-- ========================
+local ShopWindow = Rayfield:CreateWindow({
+    Name = "Shops & Modifications",
+    LoadingTitle = "Loading Vehicle Shops...",
+    Theme = "Default"
+})
+
+local ShopTab = ShopWindow:CreateTab("Locations", 4483362458)
+
+-- Vehicle Shop Locations
+local vehicleShops = {
+    {name = "DRAG RACE", x = -3573, y = 8, z = -12},
+    {name = "Modifikasi", x = -4070, y = 11, z = 350},
+    {name = "BIKE DEALER", x = -7067, y = 1, z = 2753},
+    {name = "CAR DEALER", x = -5470, y = 2, z = 2332},
+    {name = "HELM SHOP", x = -6978, y = 1, z = 4070}
+}
+
+-- Create buttons for each shop
+for _, shop in ipairs(vehicleShops) do
+    ShopTab:CreateButton({
+        Name = shop.name..string.format(" (%d, %d, %d)", shop.x, shop.y, shop.z),
+        Callback = function()
+            TeleportTo(shop.x, shop.y, shop.z)
+        end
+    })
+end
+
+-- ========================
+-- PLAYER MODS WINDOW
+-- ========================
+local PlayerModsWindow = Rayfield:CreateWindow({
+    Name = "Drag & Drive Simulator",
+    LoadingTitle = "Thanks Yang udah pakai Script saya...",
+    LoadingSubtitle = "By beatzz08 script",
+    Theme = "Default"
+})
+
+local PlayerTab = PlayerModsWindow:CreateTab("Movement", 4483362458)
+
+-- Player Mods Settings
+local speedEnabled = false
+local speedValue = 20
+local jumpEnabled = false
+local jumpValue = 50
+local infJumpEnabled = false
+
+-- Speed Hack
+PlayerTab:CreateToggle({
+    Name = "Speed Hack",
+    CurrentValue = false,
+    Callback = function(Value)
+        speedEnabled = Value
+        if Value then
+            coroutine.wrap(function()
+                while speedEnabled and task.wait() do
+                    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+                        LocalPlayer.Character.Humanoid.WalkSpeed = speedValue
+                    end
+                end
+            end)()
+        else
+            if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+                LocalPlayer.Character.Humanoid.WalkSpeed = 16 -- Default speed
+            end
+        end
+    end
+})
+
+PlayerTab:CreateSlider({
+    Name = "Speed Value",
+    Range = {16, 200},
+    Increment = 1,
+    Suffix = "studs",
+    CurrentValue = 20,
+    Callback = function(Value)
+        speedValue = Value
+        if speedEnabled and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+            LocalPlayer.Character.Humanoid.WalkSpeed = Value
+        end
+    end
+})
+
+-- Jump Hack
+PlayerTab:CreateToggle({
+    Name = "High Jump",
+    CurrentValue = false,
+    Callback = function(Value)
+        jumpEnabled = Value
+        if Value then
+            coroutine.wrap(function()
+                while jumpEnabled and task.wait() do
+                    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+                        LocalPlayer.Character.Humanoid.JumpPower = jumpValue
+                    end
+                end
+            end)()
+        else
+            if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+                LocalPlayer.Character.Humanoid.JumpPower = 50 -- Default jump
+            end
+        end
+    end
+})
+
+PlayerTab:CreateSlider({
+    Name = "Jump Height",
+    Range = {50, 500},
+    Increment = 5,
+    Suffix = "power",
+    CurrentValue = 50,
+    Callback = function(Value)
+        jumpValue = Value
+        if jumpEnabled and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+            LocalPlayer.Character.Humanoid.JumpPower = Value
+        end
+    end
+})
+
+-- Infinite Jump
+PlayerTab:CreateToggle({
+    Name = "Infinite Jump",
+    CurrentValue = false,
+    Callback = function(Value)
+        infJumpEnabled = Value
+    end
+})
+
+-- Infinite Jump Listener
+game:GetService("UserInputService").JumpRequest:Connect(function()
+    if infJumpEnabled and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+        LocalPlayer.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+    end
 end)
+
+PlayerTab:CreateButton({
+    Name = "Noclip",
+    Callback = function()
+        loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-Noclip-22002", true))()
+    end
+})
+
+-- ========================
+-- PLAYER TELEPORT SYSTEM (FIXED)
+-- ========================
+local MiscTab = Window:CreateTab("Miscellaneous", 4483362458)
+
+-- Fly Script
+MiscTab:CreateButton({
+    Name = "Fly Script",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/XNEOFF/FlyGuiV3/main/FlyGuiV3.txt"))()
+    end
+})
+
+MiscTab:CreateButton({
+    Name = "Disable Gameplay Pause",
+    Callback = function()
+        game.Players.LocalPlayer.GameplayPaused = false
+    end
+})
+
+-- System Info
+MainTab:CreateSection("Status")
+MainTab:CreateLabel("Last Answer: "..(answerValue or "Not set"))
+MainTab:CreateLabel("Bypass: Ready")
+
+-- ========================
+-- ANTI-AFK SYSTEM
+-- ========================
+local AntiAFKEnabled = false
+local VirtualUser = game:GetService("VirtualUser")
+
+local function ToggleAntiAFK(state)
+    AntiAFKEnabled = state
+    if state then
+        -- Connect to idle event
+        game:GetService("Players").LocalPlayer.Idled:Connect(function()
+            if AntiAFKEnabled then
+                VirtualUser:CaptureController()
+                VirtualUser:ClickButton2(Vector2.new())
+                Rayfield:Notify({
+                    Title = "ANTI-AFK",
+                    Content = "Prevented AFK kick",
+                    Duration = 1
+                })
+            end
+        end)
+        Rayfield:Notify({
+            Title = "ANTI-AFK ENABLED",
+            Content = "You won't be kicked for being AFK",
+            Duration = 3
+        })
+    else
+        Rayfield:Notify({
+            Title = "ANTI-AFK DISABLED",
+            Content = "Normal AFK rules apply",
+            Duration = 3
+        })
+    end
+end
+
+-- Add to Misc Tab
+MiscTab:CreateToggle({
+    Name = "Auto Anti-AFK",
+    CurrentValue = false,
+    Callback = function(Value)
+        ToggleAntiAFK(Value)
+    end
+})
+
+-- ESP Player
+local function CreateESP(player)
+    if player.Character and player.Character:FindFirstChild("Head") and not player.Character.Head:FindFirstChild("ESP") then 
+        local Billboard = Instance.new("BillboardGui", player.Character.Head)
+        Billboard.Name = "ESP"
+        Billboard.Adornee = player.Character.Head
+        Billboard.Size = UDim2.new(0, 100, 0, 40)
+        Billboard.StudsOffset = Vector3.new(0, 2, 0)
+        Billboard.AlwaysOnTop = true
+
+        local Name = Instance.new("TextLabel", Billboard)
+        Name.Size = UDim2.new(1, 0, 1, 0)
+        Name.BackgroundTransparency = 1
+        Name.Text = player.Name
+        Name.TextColor3 = Color3.fromRGB(255, 255, 255)
+        Name.TextScaled = true
+        Name.Font = Enum.Font.SourceSansBold
+    end
+end
+
+local function RemoveESP(player)
+    if player.Character and player.Character:FindFirstChild("Head") and player.Character.Head:FindFirstChild("ESP") then 
+        player.Character.Head.ESP:Destroy() 
+    end 
+end
+
+local function ToggleESP(state)
+    for _, plr in ipairs(game.Players:GetPlayers()) do
+        if plr ~= LocalPlayer then
+            if state then
+                CreateESP(plr)
+            else
+                RemoveESP(plr)
+            end
+        end
+    end
+end
+
+game.Players.PlayerAdded:Connect(function(plr)
+    plr.CharacterAdded:Connect(function()
+        if ESPEnabled then
+            CreateESP(plr)
+        end
+    end)
+end)
+
+game.Players.PlayerRemoving:Connect(function(plr)
+    RemoveESP(plr)
+end)
+
+local ESPEnabled = false
+MiscTab:CreateToggle({
+    Name = "ESP Player",
+    CurrentValue = false,
+    Callback = function(Value)
+        ESPEnabled = Value
+        ToggleESP(Value)
+    end
+})
